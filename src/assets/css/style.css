@@ -38,8 +38,7 @@ body {
 
 main {
     flex-grow: 1;
-    /* 🚨 تعويض ارتفاع الهيدر الثابت (ضروري جداً) */
-    padding-top: 100px; 
+    padding-top: 10px; 
 }
 
 .section-padding {
