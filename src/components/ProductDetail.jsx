@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import '../assets/css/style.css'; 
 import ProductList from './ProductList';  
 
-
 function ProductDetail({ product, onBack, onAddToCart }) {
     // 🚨 تم حذف حالة الكمية (useState(1))
     
@@ -27,7 +26,7 @@ function ProductDetail({ product, onBack, onAddToCart }) {
             <div className="product-detail-container">
                 {/* 1. قسم الصورة */}
                 <div className="detail-image-box">
-                    <img src={`/images/${product.img}`} alt={product.name} className="detail-image" />
+                    <img src={`../../public/images/${product.img}`} alt={product.name} className="detail-image" />
                 </div>
                 
                 {/* 2. قسم المعلومات */}

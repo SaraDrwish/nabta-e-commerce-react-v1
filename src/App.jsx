@@ -1,319 +1,252 @@
-
-// src/App.js
 import React, { useState, useEffect } from 'react';
+// استيراد المكونات
 import Header from './components/Header';
-import HeroBanner from './components/HeroBanner';
-import CollectionsSection from './components/CollectionsSection';
+import HeroBanner from './components/HeroBanner'; 
+import CollectionsSection from './components/CollectionsSection'; 
 import ProductList from './components/ProductList';
 import CallToAction from './components/CallToAction';
-import Footer from './components/Footer';
+import Footer from './components/Footer'; 
 import CheckoutForm from './components/CheckoutForm'; 
 import ProductDetail from './components/ProductDetail'; 
-import '../src/assets/css/components.css'; 
-import '../src/assets/css/style.css'; 
+import Cart from './components/Cart'; 
+// استيراد الستايلات
+import './assets/css/components.css'; 
+import './assets/css/style.css'; 
  
 
-// محاكاة لبيانات المنتجات (MOCK_PRODUCTS_API)
-const MOCK_PRODUCTS_API = [
-    { id: 1, name: "نبتة مونستيرا", price: 90.00, review: 4.8, img: "p-monstera.jpg", description: "نبتة داخلية شهيرة بأوراقها الضخمة المثقوبة، مثالية لإضافة لمسة استوائية إلى منزلك. تحتاج إلى إضاءة ساطعة غير مباشرة."},
-    { id: 2, name: "نبتة زاميا", price: 75.00, review: 4.5, img: "p-zamioculcas.jpg", description: "نبتة قوية جداً تتحمل الظروف القاسية، وتعتبر من أفضل الخيارات للمبتدئين أو لمن يبحث عن نبتة لا تحتاج للكثير من العناية. يمكن وضعها في إضاءة خافتة."},
-    { id: 3, name: "نبتة فيكس ليراتا", price: 120.00, review: 4.9, img: "p-ficus.jpg", description: "شجرة التين الكمان، مشهورة بأوراقها الكبيرة والجميلة التي تشبه آلة الكمان. تحتاج إلى إضاءة ساطعة للحفاظ على شكلها المكتنز."},
-    { id: 4, name: "نبتة السجادة", price: 35.00, review: 4.2, img: "p-coleus.jpg", description: "نبتة زينة ذات ألوان زاهية ومتنوعة، رائعة لإضافة البهجة. تحتاج إلى تقليم مستمر للحفاظ على شكلها."},
-    { id: 5, name: "سراخس بوسطن", price: 60.00, review: 4.6, img: "p-fern.jpg", description: "نبتة هوائية محبة للرطوبة، تضفي جمالاً طبيعياً على أي مكان. تحتاج إلى رش أوراقها بالماء بشكل دوري."},
-    { id: 6, name: "صبار الألوفيرا", price: 45.00, review: 4.7, img: "p-aloe.jpg", description: "نبتة طبية ذات فوائد عديدة، وسهلة العناية. يجب تعريضها لأشعة الشمس المباشرة أو الإضاءة القوية."},
-    { id: 7, name: "بذور الريحان", price: 20.00, review: 4.0, img: "p-seeds.jpg", description: "بذور عالية الجودة لزراعة الريحان الطازج في المنزل. مثالية للمطبخ."},
-    { id: 8, name: "أصيص خشب", price: 50.00, review: 4.5, img: "p-pot.jpg", description: "أصيص أنيق مصنوع يدوياً من الخشب الطبيعي، يضيف لمسة دافئة وعصرية لنباتك."},
+// 1. 📋 بيانات وهمية للمنتجات (Initial Products Data)
+const initialProducts = [
+    { id: 1, name: "نبتة Monstera Deliciosa", price: 150.00, img: 'product-1.jpg', description: "نبتة المونستيرا هي خيار مثالي لإضافة لمسة استوائية إلى ديكورك. مشهورة بأوراقها الكبيرة والمتقطعة.", rating: 5, reviews: 120 },
+    { id: 2, name: "نبتة Zamioculcas (ZZ)", price: 95.50, img: 'product-2.jpg', description: "نبتة الزاميولكاس، المعروفة بـ ZZ، هي نبتة مقاومة وتتحمل الإهمال، مثالية للمكاتب والمنازل.", rating: 4, reviews: 85 },
+    { id: 3, name: "مجموعة أدوات زراعة فاخرة", price: 75.99, img: 'product-3.jpg', description: "مجموعة أدوات زراعة متكاملة من الستانلس ستيل المقاوم للصدأ.", rating: 4, reviews: 55 },
+    { id: 4, name: "نبتة Sansevieria (جلد النمر)", price: 110.00, img: 'product-4.jpg', description: "نبتة جلد النمر تنقي الهواء وتضيف مظهراً عمودياً أنيقاً للمساحة.", rating: 5, reviews: 90 },
+    { id: 5, name: "وعاء سيراميك أبيض", price: 45.00, img: 'product-5.jpg', description: "وعاء سيراميك فاخر بتصميم مينيمالي، مثالي لأي نوع من النباتات.", rating: 4, reviews: 30 },
+    { id: 6, name: "نبتة Ficus Lyrata (كمان)", price: 220.00, img: 'product-6.jpg', description: "نبتة الكمان (Fiddle Leaf Fig) هي نبتة داخلية عصرية بأوراقها الكبيرة والدرامية.", rating: 5, reviews: 75 },
+    { id: 7, name: "تربة عضوية محسنة", price: 30.00, img: 'product-7.jpg', description: "تربة غنية بالمغذيات العضوية لضمان نمو صحي لنباتاتك الداخلية.", rating: 4, reviews: 45 },
+    { id: 8, name: "أصيص خرساني رمادي", price: 60.00, img: 'product-8.jpg', description: "أصيص خرساني عصري، ثقيل ومتين، يضيف طابعاً صناعياً أنيقاً.", rating: 5, reviews: 20 },
 ];
+
+// 2. 📋 بيانات وهمية للمجموعات (Initial Collections Data) 👈 **تمت الإضافة هنا**
+const initialCollections = [
+    { id: 101, name: "نباتات داخلية", description: "مجموعة مختارة لتنقية الهواء", image: 'collection-1.jpg', targetView: 'products' },
+    { id: 102, name: "أدوات ومستلزمات", description: "كل ما تحتاجه للعناية بنباتاتك", image: 'collection-2.jpg', targetView: 'products' },
+    { id: 103, name: "أصص وديكورات", description: "لمسة جمالية لكل زاوية", image: 'collection-3.jpg', targetView: 'products' },
+];
+
+// دالة لجلب البيانات من التخزين المحلي (Local Storage)
+const getInitialState = (key, defaultValue) => {
+    const saved = localStorage.getItem(key);
+    if (saved) {
+        try {
+            return JSON.parse(saved);
+        } catch (error) {
+            console.error("Error parsing localStorage key:", key, error);
+            localStorage.removeItem(key); 
+            return defaultValue;
+        }
+    }
+    return defaultValue;
+};
 
 
 function App() {
-  const [allProducts, setAllProducts] = useState([]); 
-  const [isLoading, setIsLoading] = useState(true);   
-    
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState([]); 
-  
-  const [cartItems, setCartItems] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null); 
-  
-  const [isCheckoutPageOpen, setIsCheckoutPageOpen] = useState(false);
+    // 1. 💾 استعادة الحالة الابتدائية من التخزين المحلي
+    const [currentView, setCurrentView] = useState(() => getInitialState('currentView', 'home'));
+    const [cartItems, setCartItems] = useState(() => getInitialState('cartItems', []));
+    const [cartCount, setCartCount] = useState(() => getInitialState('cartCount', 0));
+    
+    const [allProducts] = useState(initialProducts); 
+    const [collections] = useState(initialCollections); // 👈 **تم إضافة حالة المجموعات**
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(''); 
 
-  const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
-
-
-  // 1. العودة لأعلى الصفحة عند التنقل لصفحة المنتج أو الدفع
-  useEffect(() => {
-    if (selectedProduct || isCheckoutPageOpen) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth' 
-      });
-    }
-  }, [selectedProduct, isCheckoutPageOpen]);
-
-  // 2. تحميل المنتجات والبحث الفوري
-  useEffect(() => {
-    setAllProducts(MOCK_PRODUCTS_API);
-    setFilteredProducts(MOCK_PRODUCTS_API); 
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (allProducts.length > 0) {
-        // 🚨 هذا الـ useEffect مسؤول عن تصفية القائمة الرئيسية المعروضة بالكامل (وليست القائمة المنسدلة للبحث الفوري)
-        const results = allProducts.filter(product =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredProducts(results);
-        
-        // إغلاق أي صفحة فرعية عند بدء البحث في القائمة الرئيسية
-        if (searchTerm.length > 0) {
-             setSelectedProduct(null);
-             setIsCheckoutPageOpen(false);
-        }
-    }
-  }, [searchTerm, allProducts]); 
-  
+    // 2. 💾 Effect لحفظ البيانات في التخزين المحلي عند أي تغيير
+    useEffect(() => {
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        localStorage.setItem('cartCount', JSON.stringify(cartCount));
+        localStorage.setItem('currentView', JSON.stringify(currentView));
+    }, [cartItems, cartCount, currentView]);
 
 
+    // دوال التنقل
+    const handleNavigate = (view) => {
+        setCurrentView(view);
+    };
+
+    const handleProductClick = (product) => {
+        setSelectedProduct(product);
+        setCurrentView('productDetail');
+    };
+
+    // دالة إضافة المنتج للسلة
+    const handleAddToCart = (product) => {
+        const quantityToAdd = 1; 
+
+        setCartItems(prevItems => {
+            const existingItemIndex = prevItems.findIndex(item => item.id === product.id);
+
+            if (existingItemIndex > -1) {
+                const updatedItems = [...prevItems];
+                updatedItems[existingItemIndex].quantity += quantityToAdd;
+                return updatedItems;
+            } else {
+                return [
+                    ...prevItems,
+                    { ...product, quantity: quantityToAdd }
+                ];
+            }
+        });
+        setCartCount(prevCount => prevCount + quantityToAdd);
+    };
 
 
-  // 3. 🚨 دالة جديدة: للتحكم في التنقل من روابط الناف (ضمان العودة من الصفحات الفرعية)
-  const handleNavClick = (targetId) => {
-    setSelectedProduct(null);
-    setIsCheckoutPageOpen(false);
+    // دالة لتغيير كمية المنتج في السلة
+    const handleQuantityChange = (id, newQuantity) => {
+        if (newQuantity < 1) return handleRemoveItem(id); 
 
-    // الانتقال للقسم المطلوب بسلاسة
-    if (targetId === 'home') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }
-  };
+        setCartItems(prevItems => {
+            const updatedItems = prevItems.map(item => 
+                item.id === id ? { ...item, quantity: newQuantity } : item
+            );
+            
+            const newCartCount = updatedItems.reduce((count, item) => count + item.quantity, 0);
+            setCartCount(newCartCount);
 
-  const handleViewProduct = (product) => {
-      setSelectedProduct(product); 
-      setIsCheckoutPageOpen(false); 
-  };
+            return updatedItems;
+        });
+    };
 
-  const handleBackToShop = () => {
-      setSelectedProduct(null);
-      setIsCheckoutPageOpen(false); 
-  };
-    
-  const handleOpenCheckout = () => {
-    setSelectedProduct(null); 
-    setIsCheckoutPageOpen(true); 
-  };
+    // دالة لحذف منتج بالكامل من السلة
+    const handleRemoveItem = (id) => {
+        setCartItems(prevItems => {
+            const itemToRemove = prevItems.find(item => item.id === id);
+            
+            if (!itemToRemove) return prevItems;
 
+            const updatedItems = prevItems.filter(item => item.id !== id);
+            
+            const newCartCount = cartCount - itemToRemove.quantity;
+            setCartCount(newCartCount < 0 ? 0 : newCartCount);
 
-// 🚨 الدالة الجديدة والمعدلة لمنطق السلة (يتم إضافة 1 كل مرة وتجميعها)
-const handleAddToCart = (product, quantity = 1) => {
-    // نضمن أن الكمية المضافة هي 1 في كل ضغطة ما لم يتم تمريرها بشكل صريح (وهو ما لا يحدث الآن)
-    const quantityToAdd = 1; 
-
-    setCartItems(prevItems => {
-        // 1. البحث عن المنتج في السلة
-        const existingItemIndex = prevItems.findIndex(item => item.id === product.id);
-
-        if (existingItemIndex > -1) {
-            // 2. إذا كان المنتج موجوداً: زيادة الكمية بـ 1
-            const updatedItems = [...prevItems];
-            updatedItems[existingItemIndex].quantity += quantityToAdd;
-            return updatedItems;
-        } else {
-            // 3. إذا كان المنتج جديداً: إضافته للتو بكمية 1
-            return [
-                ...prevItems,
-                {
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    img: product.img,
-                    quantity: quantityToAdd, // إضافة الكمية 1
-                }
-            ];
-        }
-    });
-    // زيادة العداد الإجمالي للسلة المعروض في الهيدر
-    setCartCount(prevCount => prevCount + quantityToAdd);
-    
-    // يمكنك إضافة رسالة تأكيد هنا
-    console.log(`تم إضافة ${product.name}. الكمية الحالية: ${product.quantity + 1}`); 
-};
+            return updatedItems;
+        });
+    };
+    
+    // فلترة المنتجات المعروضة بناءً على البحث
+    const filteredProducts = allProducts.filter(product => 
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
 
-  // const handleAddToCart = (productToAdd) => {
-  //   const existingItem = cartItems.find(item => item.id === productToAdd.id);
-  //   if (existingItem) {
-  //     setCartItems(
-  //       cartItems.map(item =>
-  //         item.id === productToAdd.id
-  //           ? { ...item, quantity: item.quantity + 1 }
-  //           : item
-  //       )
-  //     );
-  //   } else {
-  //     setCartItems([...cartItems, { ...productToAdd, quantity: 1 }]);
-  //   }
-  // };
+    // دالة عرض المحتوى بناءً على currentView (Routing)
+    const renderContent = () => {
+        // معالجة حالة ضياع المنتج في Local Storage
+        if (currentView === 'productDetail' && !selectedProduct) {
+             return (
+                <main style={{ paddingTop: '100px', textAlign: 'center' }}>
+                    <div className="section-padding">
+                        <h2>المنتج غير محدد أو ضاعت بياناته.</h2>
+                        <button className="btn primary-btn" onClick={() => setCurrentView('products')}>العودة للمنتجات</button>
+                    </div>
+                </main>
+             );
+        }
+
+        switch (currentView) {
+            case 'home':
+                return (
+                    <>
+                        <main style={{ marginTop: '100px' }}> 
+                            {/* 🟢 استخدام HeroBanner */}
+                            <HeroBanner onNavigate={handleNavigate} /> 
+                            
+                            {/* 🟢 استخدام CollectionsSection وتمرير البيانات */}
+                            <CollectionsSection 
+                                onNavigate={handleNavigate} 
+                            /> 
+                            
+                            <ProductList 
+                                products={allProducts.slice(0, 4)} 
+                                onProductClick={handleProductClick} 
+                                onAddToCart={handleAddToCart}
+                            />
+                            <CallToAction />
+                        </main>
+                    </>
+                );
+            case 'products':
+                return (
+                    <main style={{ marginTop: '100px' }} id="products"> 
+                        <div className="section-padding">
+                             <h2 className="section-title" style={{marginBottom: '30px', textAlign: 'center'}}>كل المنتجات المتوفرة</h2>
+                            <ProductList 
+                                products={filteredProducts} 
+                                onProductClick={handleProductClick} 
+                                onAddToCart={handleAddToCart}
+                            />
+                        </div>
+                    </main>
+                );
+            case 'productDetail':
+                return (
+                    <main style={{ paddingTop: '100px' }} id="productDetail">
+                        <ProductDetail 
+                            product={selectedProduct} 
+                            onBack={() => setCurrentView('products')} 
+                            onAddToCart={handleAddToCart}
+                        />
+                    </main>
+                );
+            case 'cart':
+                return (
+                    <main style={{ paddingTop: '100px' }} id="cart">
+                        <Cart 
+                            cartItems={cartItems} 
+                            onCheckout={() => setCurrentView('checkout')} 
+                            onQuantityChange={handleQuantityChange} 
+                            onRemoveItem={handleRemoveItem} 
+                            onNavigate={handleNavigate}
+                            onProductClick={handleProductClick}
+                        />
+                    </main>
+                );
+            case 'checkout':
+                return (
+                    <main style={{ paddingTop: '100px' }} id="checkout">
+                        {/* 🟢 استخدام CheckoutForm */}
+                        <CheckoutForm 
+                            cartItems={cartItems} 
+                            total={cartItems.reduce((total, item) => total + item.price * item.quantity, 0)}
+                            onNavigate={handleNavigate}
+                        />
+                    </main>
+                );
+            default:
+                return (
+                    <main style={{ marginTop: '100px', textAlign: 'center' }}>
+                        <h1>404 | الصفحة غير موجودة</h1>
+                    </main>
+                );
+        }
+    };
 
 
-// 🚨 تأكدي من تمرير الدوال الجديدة في دالة renderContent (أو مكان عرض Cart)
-const renderContent = () => {
-    switch (currentView) {
-        case 'cart':
-            return (
-                <Cart 
-                    cartItems={cartItems} 
-                    onCheckout={() => setCurrentView('checkout')} 
-                    onQuantityChange={handleQuantityChange} // 🚨 الدالة الجديدة
-                    onRemoveItem={handleRemoveItem} // 🚨 الدالة الجديدة
-                    onNavigate={handleNavigate}
-                />
-            );
-        // ... (باقي الحالات)
-    }
-};
-
-  // 🚨 دالة لتغيير كمية المنتج في السلة
-const handleQuantityChange = (id, newQuantity) => {
-    setCartItems(prevItems => {
-        const updatedItems = prevItems.map(item => 
-            item.id === id ? { ...item, quantity: newQuantity } : item
-        );
-        
-        // إعادة حساب العدد الإجمالي للـ cartCount
-        const newCartCount = updatedItems.reduce((count, item) => count + item.quantity, 0);
-        setCartCount(newCartCount);
-
-        return updatedItems;
-    });
-};
-
-// 🚨 دالة لحذف منتج بالكامل من السلة
-const handleRemoveItem = (id) => {
-    setCartItems(prevItems => {
-        const itemToRemove = prevItems.find(item => item.id === id);
-        
-        if (!itemToRemove) return prevItems;
-
-        const updatedItems = prevItems.filter(item => item.id !== id);
-        
-        // تحديث العداد الإجمالي للسلة
-        const newCartCount = cartCount - itemToRemove.quantity;
-        setCartCount(newCartCount);
-
-        // إذا كانت السلة فارغة، ننتقل لعرض صفحة المنتجات (اختياري)
-        if (updatedItems.length === 0) {
-             setCurrentView('products');
-        }
-        
-        return updatedItems;
-    });
-};
-
-
-  const handleOrderComplete = () => {
-    setCartItems([]); 
-    setIsCheckoutPageOpen(false); 
-  };
-
-  const collections = [
-    { id: 'c1', title: 'الأكثر مبيعاً', img: 'coll1.jpg' },
-    { id: 'c2', title: 'للمبتدئين', img: 'coll2.jpg' },
-    { id: 'c3', title: 'الأدوات', img: 'coll3.jpg' },
-  ];
-  
-  return (
-    <div className="app-container">
-      {/* 🚨 تمرير onNavigate و allProducts و handleViewProduct (كـ onProductClick) إلى Header */}
-      <Header 
-        cartCount={cartItems.length} 
-        onSearchChange={setSearchTerm} 
-        onCartClick={handleOpenCheckout}
-        onNavigate={handleNavClick} 
-        allProducts={allProducts} 
-        onProductClick={handleViewProduct}
-      /> 
-      
-      <main>
-          {isCheckoutPageOpen ? (
-              <CheckoutForm 
-                cartItems={cartItems} 
-                totalAmount={totalAmount} 
-                onOrderComplete={handleOrderComplete}
-                onClose={handleBackToShop} 
-              />
-          ) : selectedProduct ? (
-              <ProductDetail 
-                  product={selectedProduct} 
-                  onBack={handleBackToShop} 
-                  onAddToCart={handleAddToCart}
-                  allProducts={allProducts} 
-                  onViewProduct={handleViewProduct}
-              />
-          ) : (
-              <>
-                {/* الأقسام هنا تحتاج لـ id لتعمل روابط الناف بشكل سليم */}
-                <div id="home"> 
-                    <HeroBanner />
-                </div>
-                
-                <CollectionsSection collections={collections} />
-                
-                <section id="shop" className="section-padding featured-products-section"> 
-                  <h2 className="section-title">🪴 اكتشف مجموعتنا</h2>
-                  
-                  {isLoading ? (
-                      <p style={{textAlign: 'center', fontSize: '1.5em', color: '#59866F'}}>... جاري تحميل المنتجات</p>
-                  ) : (
-                      <ProductList 
-                          products={filteredProducts} 
-                          onAddToCart={handleAddToCart} 
-                          onViewProduct={handleViewProduct}
-                      />
-                  )}
-                </section>
-
-                <CallToAction 
-                  title="نصائح للعناية بنباتاتك"
-                  subtitle="دليلك خطوة بخطوة لنمو صحي ومزدهر"
-                  buttonText="اكتشف الدليل"
-                  image="cta-plant.jpg"
-                />
-
-                <section className="section-padding trending-products-section">
-                  <h2 className="section-title green-title">🌵 الأكثر طلباً</h2>
-                  <ProductList 
-                      products={filteredProducts.slice(0, 4)} 
-                      onAddToCart={handleAddToCart}
-                      onViewProduct={handleViewProduct}
-                  />
-                </section>
-                
-                {/* 🚨 قسم المدونة يحتاج ID */}
-                <section id="blog" style={{minHeight: '200px', textAlign: 'center', padding: '50px 20px', backgroundColor: '#f9f9f9'}}>
-                    <h2 className="section-title"><i className="fas fa-edit fa-fw"></i> مدونة نبتة</h2>
-                    <p>مقالات ونصائح للحفاظ على نباتاتك المنزلية.</p>
-                </section>
-
-                {/* 🚨 قسم التواصل يحتاج ID */}
-                <section id="contact" style={{minHeight: '200px', textAlign: 'center', padding: '50px 20px'}}>
-                    <h2 className="section-title"><i className="fas fa-phone-alt fa-fw"></i> تواصل معنا</h2>
-                    <p>نحن هنا للإجابة على جميع استفساراتك.</p>
-                </section>
-              </>
-          )}
-      </main>
-
-      <Footer />
-    </div>
-  );
+    return (
+        <div className="App" dir="rtl">
+            <Header 
+                cartCount={cartCount}
+                onCartClick={() => handleNavigate('cart')}
+                onNavigate={handleNavigate}
+                onSearchChange={setSearchTerm}
+                allProducts={allProducts}
+                onProductClick={handleProductClick}
+            />
+            
+            {renderContent()}
+            
+            <Footer />
+        </div>
+    );
 }
 
 export default App;

@@ -17,10 +17,10 @@
     margin-left: 5px;
 }
 
-/* --- Header Component - أصبح ثابتاً --- */
 .main-header {
     /* 🚨 التعديلات لجعله ثابتاً */
     position: fixed;
+    /* top: 30px; */
     top: 0;
     left: 0;
     right: 0;
@@ -79,7 +79,7 @@
     display: flex;
     border: 1px solid #ccc;
     border-radius: 25px;
-    overflow: hidden;
+    /* overflow: hidden; */
     height: 40px;
     position: relative; /* مهم لنتائج البحث الفوري */
     z-index: 1050; /* أعلى من الهيدر بقليل */
@@ -98,10 +98,10 @@
     background-color: var(--primary-dark-green);
     color: white;
     border: none;
-    padding: 0 15px;
-    font-size: 1.1em;
+    padding: 0 11px;
+    font-size: 0.8em;
     cursor: pointer;
-    border-radius: 0 25px 25px 0;
+    border-radius:0.02rem;
 }
 
 /* --- قائمة نتائج البحث الفوري --- */
@@ -446,13 +446,14 @@
         flex-wrap: wrap;
         padding: 15px 3%;
         gap: 15px;
+        top: 0;
     }
     /* 🚨 إظهار زر المنيو في الموبايل والتابلت */
     .menu-toggle-btn {
         display: block; 
         order: 1;
     }
-    .main-nav {
+    .main-nav , .top-strip {
         /* إخفاء القائمة في وضع التابلت والديسكتوب العادي */
         display: none; 
     }
@@ -540,6 +541,7 @@
         flex-wrap: wrap;
         /* يتم توزيع العناصر لتشغل سطرين: (منيو، شعار، أيقونات) ثم (بحث) */
         justify-content: space-between; 
+        top: 0;
     }
     .logo {
         font-size: 1.5em;
@@ -553,7 +555,7 @@
     .search-bar {
         order: 4; /* نقل البحث للسطر الثاني */
         margin: 10px 0;
-        width: 100%; /* ملء العرض في السطر الثاني */
+        width: 98%; /* ملء العرض في السطر الثاني */
     }
     /* تصحيح عرض قائمة البحث في الموبايل */
     .search-results-dropdown {
@@ -575,18 +577,19 @@
         /* الخصائص الأساسية لإخفائها */
         position: fixed;
         top: 0;
-        right: -250px; /* إخفائها خارج الشاشة */
+        right: -250px;  
         height: 100vh;
-        width: 250px; /* عرض القائمة الجانبية */
+        width: 250px;  
         background-color: var(--light-green);
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
         transition: right 0.3s ease-in-out;
         z-index: 1001; 
         padding-top: 80px;
-        display: block; /* يجب أن تكون بلوك لتعمل الانتقالة */
+        display: block; 
     }
     .main-nav.open {
-        right: 0; /* 🚨 إظهار القائمة عند الضغط على الزر */
+        right: 0; 
+        z-index: 11111; 
     }
     .main-nav ul {
         flex-direction: column;
@@ -695,7 +698,7 @@
 .cart-item-row .icon-btn {
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: white;
+    background-color: var(--accent-yellow);
     transition: background-color 0.2s;
 }
 .cart-item-row .icon-btn:hover {

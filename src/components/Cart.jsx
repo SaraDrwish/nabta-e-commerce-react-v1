@@ -1,9 +1,10 @@
 import React from 'react';
-// يجب أن يكون لديك ملف ستايلز عام للمكونات الأخرى
-// import '../styles/components.css'; 
+import '../assets/css/components.css';  
+import '../assets/css/style.css';  
 
-function Cart({ cartItems, onCheckout, onQuantityChange, onRemoveItem, onNavigate }) {
-
+function Cart({ cartItems, onCheckout, onQuantityChange, onRemoveItem, onNavigate, onProductClick }) {
+    // onProductClick: دالة جديدة للانتقال لصفحة التفاصيل
+    
     // دالة لحساب المجموع الإجمالي
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -19,7 +20,7 @@ function Cart({ cartItems, onCheckout, onQuantityChange, onRemoveItem, onNavigat
                     <button 
                         className="btn primary-btn" 
                         style={{marginTop: '20px'}}
-                        onClick={(e) => onNavigate('products')}
+                        onClick={() => onNavigate('products')}
                     >
                         تصفح المنتجات
                     </button>
@@ -28,6 +29,14 @@ function Cart({ cartItems, onCheckout, onQuantityChange, onRemoveItem, onNavigat
         );
     }
     
+    // دالة للتعامل مع النقر على اسم المنتج للانتقال لصفحة التفاصيل
+    const handleProductClick = (item) => {
+        if (onProductClick) {
+            // نمرر المنتج نفسه الذي في السلة
+            onProductClick(item);
+        }
+    };
+
     return (
         <div className="cart-page-container checkout-page-container section-padding">
             <h2 className="section-title" style={{textAlign: 'center', color: 'var(--primary-dark-green)'}}>🛒 سلة المشتريات</h2>
@@ -44,10 +53,23 @@ function Cart({ cartItems, onCheckout, onQuantityChange, onRemoveItem, onNavigat
                     {cartItems.map(item => (
                         <div key={item.id} className="cart-item-row">
                             
-                            {/* المنتج والاسم (يمين) */}
+                            {/* 🚨 تمكين النقر على اسم المنتج (يمين) */}
                             <div style={{flexBasis: '40%', display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                {/* الصورة */}
                                 <img src={`/images/${item.img}`} alt={item.name} style={{width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px'}} />
-                                <span>{item.name}</span>
+                                
+                                {/* 🚨 الاسم يصبح رابطاً */}
+                                <span 
+                                    onClick={() => handleProductClick(item)} 
+                                    style={{
+                                        cursor: 'pointer', 
+                                        color: 'var(--primary-dark-green)', 
+                                        fontWeight: '700',
+                                        textDecoration: 'underline'
+                                    }}
+                                >
+                                    {item.name}
+                                </span>
                             </div>
                             
                             {/* التحكم بالكمية (وسط) */}
@@ -56,7 +78,7 @@ function Cart({ cartItems, onCheckout, onQuantityChange, onRemoveItem, onNavigat
                                 <button 
                                     className="icon-btn" 
                                     onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-                                    disabled={item.quantity <= 1} // تعطيل عند كمية 1
+                                    disabled={item.quantity <= 1} 
                                     style={{fontSize: '0.8em', padding: '3px 7px', height: '30px'}}
                                 >
                                     <i className="fas fa-minus"></i>
@@ -82,7 +104,7 @@ function Cart({ cartItems, onCheckout, onQuantityChange, onRemoveItem, onNavigat
                             {/* الإجمالي للوحدة (يسار) */}
                             <div style={{flexBasis: '20%', textAlign: 'left', fontWeight: 'bold'}}>
                                 {(item.price * item.quantity).toFixed(2)} ر.س
-                                {/* 🚨 زر الحذف */}
+                                {/* زر الحذف */}
                                 <button 
                                     className="icon-btn" 
                                     onClick={() => onRemoveItem(item.id)}

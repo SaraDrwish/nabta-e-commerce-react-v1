@@ -1,9 +1,10 @@
 import React from 'react';
 import '../assets/css/components.css';
  
+ 
 // 🚨 تم إضافة onViewProduct
 function ProductCard({ product, onAddToCart, onViewProduct }) { 
-  const imagePath = `/images/${product.img}`; 
+  const imagePath = `../../public/images/${product.image}`; 
   const starRating = '⭐️'.repeat(Math.floor(product.review)) + (product.review % 1 >= 0.5 ? '⭐' : '');
 
   return (
