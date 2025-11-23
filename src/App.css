@@ -1,0 +1,96 @@
+/* src/styles/App.css */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800&display=swap');
+
+:root {
+  --primary-dark-green: #385E48; 
+  --secondary-green: #59866F;   
+  --light-green: #E8F0E4;       
+  --accent-yellow: #FFD700;    
+  --text-dark: #2C3E50;         
+  --text-light: #F7F7F7;        
+  --bg-white: #FFFFFF;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  direction: rtl; 
+  color: var(--text-dark);
+  background-color: var(--bg-white);
+  line-height: 1.6;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+}
+
+.section-padding {
+    padding: 60px 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 40px;
+  color: var(--primary-dark-green);
+  font-size: 2.5em;
+  font-weight: 700;
+}
+
+.green-title {
+    color: var(--primary-dark-green);
+}
+
+/* --- الأزرار (Buttons) العامة --- */
+.btn {
+  cursor: pointer;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1em;
+  transition: all 0.3s ease;
+}
+
+.primary-btn {
+  background-color: var(--primary-dark-green);
+  color: var(--text-light);
+}
+
+.primary-btn:hover {
+  background-color: var(--secondary-green);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: var(--primary-dark-green);
+  border: 2px solid var(--primary-dark-green);
+}
+
+.secondary-btn:hover {
+  background-color: var(--primary-dark-green);
+  color: var(--text-light);
+}
+
+.white-btn {
+    background-color: var(--bg-white);
+    color: var(--primary-dark-green);
+}
+
+.white-btn:hover {
+    background-color: var(--light-green);
+}
